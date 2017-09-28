@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="dfe7cece-068c-4728-b36a-4a767f9fe687" name="broker" url="http://200.19.179.201">
+        <fileTransfer host="200.19.179.201" port="222" privateKey="$USER_HOME$/carloscarvalho.pem" rootFolder="/home/ubuntu" accessType="SFTP" keyPair="true">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" />
+          </advancedOptions>
+          <option name="port" value="222" />
+        </fileTransfer>
+      </webServer>
+      <webServer id="b2058f4e-bbb2-4812-88b2-14ee068314c5" name="provider" url="http://200.19.179.201">
+        <fileTransfer host="200.19.179.201" port="2222" privateKey="$USER_HOME$/carloscarvalho.pem" rootFolder="/home/ubuntu" accessType="SFTP" keyPair="true">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" />
+          </advancedOptions>
+          <option name="port" value="2222" />
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
