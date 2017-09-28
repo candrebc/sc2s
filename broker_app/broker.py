@@ -4,7 +4,7 @@ import os
 import sys
 import _thread
 
-CERT_BROKER = 'cert.pem'
+CERT_BROKER = '../certificates/broker.pem'
 IP_BROKER = ''
 PORT_BROKER = 8080
 

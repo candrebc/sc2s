@@ -1,6 +1,6 @@
 import socket, ssl, hashlib, time
 
-CERT_BROKER = "cert.pem"
+CERT_BROKER = '../certificates/broker.pem'
 #CERT_BROKER = "d8d30cb266b0d14f25e83dad06846b12"
 IP_BROKER = '200.19.179.201'
 PORT_BROKER = 8080
