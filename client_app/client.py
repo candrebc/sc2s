@@ -1,29 +1,77 @@
-import socket, ssl, hashlib, time
+import socket, ssl, os, hashlib, time
+
+import pickle
 
 CERT_BROKER = '../certificates/broker.pem'
+CERT_ADMIN = '../certificates/admin.pem'
+CERT_USER1 = '../certificates/user1.pem'
+CERT_USER2 = '../certificates/user2.pem'
+CERTS = '../certificates/'
 #CERT_BROKER = "d8d30cb266b0d14f25e83dad06846b12"
 IP_BROKER = '200.19.179.201'
 PORT_BROKER = 8080
 
-def conectado(connection):
-    print('Para sair use CTRL+X\n')
-    msg = input()
-    while msg != '\x18':
-        connection.send(msg.encode())
-        msg = input()
 
+def list_files(connection):
+    connection.send('list'.encode())
+    files = connection.recv(1024)
+    print(pickle.loads(files))
+
+def send_file(connection):
+    connection.send('send'.encode())
+    fileName = input("Digite o nome do arquivo: ")
+    connection.send(fileName.encode())
+    fileSize = os.path.getsize(fileName)
+    connection.send(str(fileSize).encode())
+    # list = files()
+    # i = list.index(fileName)
+    file = open(fileName,'rb') # b - binario
+    while (fileSize > 0):
+        print ('Sending...')
+        content = file.read(1024)
+        connection.send(content)
+        fileSize -= len(content)
+    file.close()
+    print('Done')
+
+def get_file(connection):
+    connection.send('get'.encode())
+    msg = input("Digite o nome do arquivo: ")
+    connection.send(msg.encode())
+    file = open(msg,'wb') # b - binario
+    fileSize = int(connection.recv(1024).decode())
+    while (fileSize > 0):
+        print ('Receiving...')
+        content = connection.recv(1024)
+        file.write(content)
+        fileSize -= len(content)
+    file.close()
+    print('Done')
+
+def conectado(connection):
+    msg = input('Comando (exit, list, send or get):')
+    while msg != 'exit':
+        if msg == 'list': list_files(connection)
+        elif msg == 'send': send_file(connection)
+        elif msg == 'get': get_file(connection)
+        else: print('comando inválido')
+        msg = input('Comando (exit, list, send or get):')
+    connection.send(msg.encode())
+
+
+# context = ssl.create_default_context(ssl.Purpose.SERVER_AUTH,capath=CERTS)
+# context = ssl.SSLContext(ssl.PROTOCOL_TLS)
+# context.verify_mode = ssl.CERT_REQUIRED
+# context.check_hostname = False #True
+# context.load_verify_locations(capath=CERTS)
+# context.load_cert_chain(certfile=CERT_ADMIN, keyfile=CERT_ADMIN)
 
 sslsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 #sslsocket = socket.socket(socket.AF_INET)
 #context = ssl.create_default_context()
 
-#context = ssl.SSLContext(ssl.PROTOCOL_TLS)
-#context.verify_mode = ssl.CERT_REQUIRED
-#context.check_hostname = True
-#context.load_cert_chain(CERT_BROKER)
-#context.load_verify_locations("../broker_app/broker.pem")
-
-connection = ssl.wrap_socket(sslsocket, ca_certs=CERT_BROKER, cert_reqs=ssl.CERT_REQUIRED)
+connection = ssl.wrap_socket(sslsocket, server_side=False, ca_certs=CERT_BROKER, cert_reqs=ssl.CERT_REQUIRED, certfile=CERT_ADMIN, keyfile=CERT_ADMIN)
+#connection = context.wrap_socket(sslsocket, server_side=False)
 try:
     connection.connect((IP_BROKER,PORT_BROKER))
     # if hashlib.md5(connection.getpeercert(True)).hexdigest() != CERT_BROKER:
