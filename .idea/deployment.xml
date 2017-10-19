@@ -7,6 +7,10 @@
           <mappings>
             <mapping deploy="/sc2s" local="$PROJECT_DIR$" web="/" />
           </mappings>
+          <excludedPaths>
+            <excludedPath local="true" path="$PROJECT_DIR$/files" />
+            <excludedPath path="/sc2s/files" />
+          </excludedPaths>
         </serverdata>
       </paths>
       <paths name="provider">
